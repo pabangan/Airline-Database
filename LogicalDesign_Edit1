@@ -1,0 +1,95 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Aircraft`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Aircraft` (
+  `idAircraft` INT NOT NULL,
+  `Company` VARCHAR(45) NOT NULL,
+  `Plane Type` VARCHAR(45) NULL,
+  `Seat Count` VARCHAR(45) NULL,
+  `Seat Pitch` VARCHAR(45) NULL,
+  `Seat Width` VARCHAR(45) NULL,
+  `Wi-Fi` VARCHAR(45) NULL,
+  `Entertainment` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAircraft`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Flights`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Flights` (
+  `idFlights` INT NOT NULL,
+  `Aircraft_idAircraft` INT NOT NULL,
+  `Departure Time` DATETIME NOT NULL,
+  `Arrival Time` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idFlights`),
+  INDEX `fk_Flights_Aircraft_idx` (`Aircraft_idAircraft` ASC),
+  CONSTRAINT `fk_Flights_Aircraft`
+    FOREIGN KEY (`Aircraft_idAircraft`)
+    REFERENCES `mydb`.`Aircraft` (`idAircraft`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Airports`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Airports` (
+  `idAirports` INT NOT NULL,
+  `City` VARCHAR(45) NOT NULL,
+  `State` VARCHAR(45) NOT NULL,
+  `News` VARCHAR(1000) NULL,
+  PRIMARY KEY (`idAirports`),
+  UNIQUE INDEX `idAirports_UNIQUE` (`idAirports` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Airports_copy1`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Airports_copy1` (
+  `idAirports` INT NOT NULL,
+  `City` VARCHAR(45) NOT NULL,
+  `News` VARCHAR(1000) NULL,
+  `State` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idAirports`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Flights_have_Airports`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Flights_have_Airports` (
+  `Flights_idFlights` INT NOT NULL,
+  `Airports_idAirports` INT NOT NULL,
+  `Status` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Flights_idFlights`, `Airports_idAirports`),
+  INDEX `fk_Flights_has_Airports_Airports1_idx` (`Airports_idAirports` ASC),
+  INDEX `fk_Flights_has_Airports_Flights1_idx` (`Flights_idFlights` ASC),
+  CONSTRAINT `fk_Flights_has_Airports_Flights1`
+    FOREIGN KEY (`Flights_idFlights`)
+    REFERENCES `mydb`.`Flights` (`idFlights`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flights_has_Airports_Airports1`
+    FOREIGN KEY (`Airports_idAirports`)
+    REFERENCES `mydb`.`Airports` (`idAirports`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
