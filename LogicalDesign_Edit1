@@ -1,0 +1,227 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Aircraft`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Aircraft` (
+  `idAircraft` INT NOT NULL,
+  `Company` VARCHAR(45) NOT NULL,
+  `Plane Type` VARCHAR(45) NULL,
+  `Seat Count` VARCHAR(45) NULL,
+  `Seat Pitch` VARCHAR(45) NULL,
+  `Seat Width` VARCHAR(45) NULL,
+  `Wi-Fi` VARCHAR(45) NULL,
+  `Entertainment` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAircraft`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Flights`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Flights` (
+  `idFlights` INT NOT NULL,
+  `Aircraft_idAircraft` INT NOT NULL,
+  `Departure Time` DATETIME NOT NULL,
+  `Arrival Time` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idFlights`),
+  INDEX `fk_Flights_Aircraft_idx` (`Aircraft_idAircraft` ASC),
+  CONSTRAINT `fk_Flights_Aircraft`
+    FOREIGN KEY (`Aircraft_idAircraft`)
+    REFERENCES `mydb`.`Aircraft` (`idAircraft`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Airports`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Airports` (
+  `idAirports` INT NOT NULL,
+  `City` VARCHAR(45) NOT NULL,
+  `State` VARCHAR(45) NOT NULL,
+  `News` VARCHAR(1000) NULL,
+  PRIMARY KEY (`idAirports`),
+  UNIQUE INDEX `idAirports_UNIQUE` (`idAirports` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Flight Destinations`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Flight Destinations` (
+  `Flights_idFlights` INT NOT NULL,
+  `Airports_idAirports` INT NOT NULL,
+  `Status` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Flights_idFlights`, `Airports_idAirports`),
+  INDEX `fk_Flights_has_Airports_Airports1_idx` (`Airports_idAirports` ASC),
+  INDEX `fk_Flights_has_Airports_Flights1_idx` (`Flights_idFlights` ASC),
+  CONSTRAINT `fk_Flights_has_Airports_Flights1`
+    FOREIGN KEY (`Flights_idFlights`)
+    REFERENCES `mydb`.`Flights` (`idFlights`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flights_has_Airports_Airports1`
+    FOREIGN KEY (`Airports_idAirports`)
+    REFERENCES `mydb`.`Airports` (`idAirports`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Employee`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Employee` (
+  `idEmployee` INT NOT NULL,
+  `First Name` VARCHAR(45) NOT NULL,
+  `Last Name` VARCHAR(45) NOT NULL,
+  `Company` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idEmployee`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Flight Crew`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Flight Crew` (
+  `Flights_idFlights` INT NOT NULL,
+  `Employee_idEmployee` INT NOT NULL,
+  `Position` VARCHAR(45) NOT NULL,
+  `Pay` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Flights_idFlights`, `Employee_idEmployee`),
+  INDEX `fk_Flights_has_Employee_Employee1_idx` (`Employee_idEmployee` ASC),
+  INDEX `fk_Flights_has_Employee_Flights1_idx` (`Flights_idFlights` ASC),
+  CONSTRAINT `fk_Flights_has_Employee_Flights1`
+    FOREIGN KEY (`Flights_idFlights`)
+    REFERENCES `mydb`.`Flights` (`idFlights`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flights_has_Employee_Employee1`
+    FOREIGN KEY (`Employee_idEmployee`)
+    REFERENCES `mydb`.`Employee` (`idEmployee`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Seats`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Seats` (
+  `idSeats` INT NOT NULL,
+  `Aircraft_idAircraft` INT NOT NULL,
+  `Section` VARCHAR(45) NOT NULL,
+  `Number` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idSeats`),
+  INDEX `fk_Seats_Aircraft1_idx` (`Aircraft_idAircraft` ASC),
+  CONSTRAINT `fk_Seats_Aircraft1`
+    FOREIGN KEY (`Aircraft_idAircraft`)
+    REFERENCES `mydb`.`Aircraft` (`idAircraft`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Seat Designation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Seat Designation` (
+  `Flights_idFlights` INT NOT NULL,
+  `Seats_idSeats` INT NOT NULL,
+  `Zone` VARCHAR(45) NOT NULL,
+  `Status` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Flights_idFlights`, `Seats_idSeats`),
+  INDEX `fk_Flights_has_Seats_Seats1_idx` (`Seats_idSeats` ASC),
+  INDEX `fk_Flights_has_Seats_Flights1_idx` (`Flights_idFlights` ASC),
+  CONSTRAINT `fk_Flights_has_Seats_Flights1`
+    FOREIGN KEY (`Flights_idFlights`)
+    REFERENCES `mydb`.`Flights` (`idFlights`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flights_has_Seats_Seats1`
+    FOREIGN KEY (`Seats_idSeats`)
+    REFERENCES `mydb`.`Seats` (`idSeats`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Users` (
+  `Primary Email` INT NOT NULL,
+  `First Name` VARCHAR(45) NOT NULL,
+  `Last Name` VARCHAR(45) NOT NULL,
+  `Middle Name` VARCHAR(45) NULL,
+  `Date of Birth` DATE NOT NULL,
+  `Gender` VARCHAR(45) NOT NULL,
+  `Userscol` VARCHAR(45) NULL,
+  `Primary Phone #` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  `Known Traveler #` VARCHAR(45) NULL,
+  PRIMARY KEY (`Primary Email`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Bookings`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Bookings` (
+  `Flights_idFlights` INT NOT NULL,
+  `Users_Primary Email` INT NOT NULL,
+  `Time Ordered` DATETIME NOT NULL,
+  PRIMARY KEY (`Flights_idFlights`, `Users_Primary Email`),
+  INDEX `fk_Flights_has_Users_Users1_idx` (`Users_Primary Email` ASC),
+  INDEX `fk_Flights_has_Users_Flights1_idx` (`Flights_idFlights` ASC),
+  CONSTRAINT `fk_Flights_has_Users_Flights1`
+    FOREIGN KEY (`Flights_idFlights`)
+    REFERENCES `mydb`.`Flights` (`idFlights`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flights_has_Users_Users1`
+    FOREIGN KEY (`Users_Primary Email`)
+    REFERENCES `mydb`.`Users` (`Primary Email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Ticket`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Ticket` (
+  `Seats_idSeats` INT NOT NULL,
+  `Bookings_Flights_idFlights` INT NOT NULL,
+  `Bookings_Users_Primary Email` INT NOT NULL,
+  `Amenities` VARCHAR(45) NULL,
+  `Cost` DECIMAL NOT NULL,
+  PRIMARY KEY (`Seats_idSeats`, `Bookings_Flights_idFlights`, `Bookings_Users_Primary Email`),
+  INDEX `fk_Seats_has_Bookings_Bookings1_idx` (`Bookings_Flights_idFlights` ASC, `Bookings_Users_Primary Email` ASC),
+  INDEX `fk_Seats_has_Bookings_Seats1_idx` (`Seats_idSeats` ASC),
+  CONSTRAINT `fk_Seats_has_Bookings_Seats1`
+    FOREIGN KEY (`Seats_idSeats`)
+    REFERENCES `mydb`.`Seats` (`idSeats`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Seats_has_Bookings_Bookings1`
+    FOREIGN KEY (`Bookings_Flights_idFlights` , `Bookings_Users_Primary Email`)
+    REFERENCES `mydb`.`Bookings` (`Flights_idFlights` , `Users_Primary Email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
