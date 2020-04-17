@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Flights` (
   `idFlights` INT NOT NULL,
   `Aircraft_idAircraft` INT NOT NULL,
   `Departure Time` DATETIME NOT NULL,
-  `Arrival Time` VARCHAR(45) NOT NULL,
+  `Arrival Time` DATETIME NOT NULL,
   PRIMARY KEY (`idFlights`),
   INDEX `fk_Flights_Aircraft_idx` (`Aircraft_idAircraft` ASC),
   CONSTRAINT `fk_Flights_Aircraft`
