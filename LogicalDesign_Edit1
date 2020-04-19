@@ -5,13 +5,17 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`Aircraft`
+-- Schema mydb
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Aircraft` (
+CREATE SCHEMA IF NOT EXISTS `Airplanes_Project` DEFAULT CHARACTER SET utf8 ;
+USE `Airplanes_Project` ;
+
+-- -----------------------------------------------------
+-- Table `Airplanes_Project`.`Aircraft`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Aircraft` (
   `idAircraft` INT NOT NULL,
   `Company` VARCHAR(45) NOT NULL,
   `Plane Type` VARCHAR(45) NULL,
@@ -20,18 +24,19 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Aircraft` (
   `Seat Width` VARCHAR(45) NULL,
   `Wi-Fi` VARCHAR(45) NULL,
   `Entertainment` VARCHAR(45) NULL,
+  `Status` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idAircraft`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Flights`
+-- Table `Airplanes_Project`.`Flights`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Flights` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flights` (
   `idFlights` INT NOT NULL,
   `Aircraft_idAircraft` INT NOT NULL,
   `Departure Time` DATETIME NOT NULL,
-  `Arrival Time` DATETIME NOT NULL,
+  `Arrival Time` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idFlights`),
   INDEX `fk_Flights_Aircraft_idx` (`Aircraft_idAircraft` ASC),
   CONSTRAINT `fk_Flights_Aircraft`
@@ -43,9 +48,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Airports`
+-- Table `Airplanes_Project`.`Airports`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Airports` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Airports` (
   `idAirports` INT NOT NULL,
   `City` VARCHAR(45) NOT NULL,
   `State` VARCHAR(45) NOT NULL,
@@ -56,9 +61,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Flight Destinations`
+-- Table `Airplanes_Project`.`Flight Destinations`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Flight Destinations` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flight Destinations` (
   `Flights_idFlights` INT NOT NULL,
   `Airports_idAirports` INT NOT NULL,
   `Status` VARCHAR(45) NOT NULL,
@@ -79,9 +84,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Employee`
+-- Table `Airplanes_Project`.`Employee`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Employee` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Employee` (
   `idEmployee` INT NOT NULL,
   `First Name` VARCHAR(45) NOT NULL,
   `Last Name` VARCHAR(45) NOT NULL,
@@ -91,9 +96,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Flight Crew`
+-- Table `Airplanes_Project`.`Flight Crew`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Flight Crew` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flight Crew` (
   `Flights_idFlights` INT NOT NULL,
   `Employee_idEmployee` INT NOT NULL,
   `Position` VARCHAR(45) NOT NULL,
@@ -115,14 +120,14 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Seats`
+-- Table `Airplanes_Project`.`Seats`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Seats` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Seats` (
   `idSeats` INT NOT NULL,
   `Aircraft_idAircraft` INT NOT NULL,
   `Section` VARCHAR(45) NOT NULL,
   `Number` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idSeats`),
+  PRIMARY KEY (`idSeats`, `Aircraft_idAircraft`),
   INDEX `fk_Seats_Aircraft1_idx` (`Aircraft_idAircraft` ASC),
   CONSTRAINT `fk_Seats_Aircraft1`
     FOREIGN KEY (`Aircraft_idAircraft`)
@@ -133,9 +138,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Seat Designation`
+-- Table `Airplanes_Project`.`Seat Designation`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Seat Designation` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Seat Designation` (
   `Flights_idFlights` INT NOT NULL,
   `Seats_idSeats` INT NOT NULL,
   `Zone` VARCHAR(45) NOT NULL,
@@ -157,16 +162,15 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Users`
+-- Table `Airplanes_Project`.`Users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Users` (
-  `Primary Email` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Users` (
+  `Primary Email` VARCHAR(45) NOT NULL,
   `First Name` VARCHAR(45) NOT NULL,
   `Last Name` VARCHAR(45) NOT NULL,
   `Middle Name` VARCHAR(45) NULL,
   `Date of Birth` DATE NOT NULL,
   `Gender` VARCHAR(45) NOT NULL,
-  `Userscol` VARCHAR(45) NULL,
   `Primary Phone #` VARCHAR(45) NOT NULL,
   `Password` VARCHAR(45) NOT NULL,
   `Known Traveler #` VARCHAR(45) NULL,
@@ -175,11 +179,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Bookings`
+-- Table `Airplanes_Project`.`Bookings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Bookings` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Bookings` (
   `Flights_idFlights` INT NOT NULL,
-  `Users_Primary Email` INT NOT NULL,
+  `Users_Primary Email` VARCHAR(45) NOT NULL,
   `Time Ordered` DATETIME NOT NULL,
   PRIMARY KEY (`Flights_idFlights`, `Users_Primary Email`),
   INDEX `fk_Flights_has_Users_Users1_idx` (`Users_Primary Email` ASC),
@@ -198,12 +202,12 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Ticket`
+-- Table `Airplanes_Project`.`Ticket`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Ticket` (
+CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Ticket` (
   `Seats_idSeats` INT NOT NULL,
   `Bookings_Flights_idFlights` INT NOT NULL,
-  `Bookings_Users_Primary Email` INT NOT NULL,
+  `Bookings_Users_Primary Email` VARCHAR(45) NOT NULL,
   `Amenities` VARCHAR(45) NULL,
   `Cost` DECIMAL NOT NULL,
   PRIMARY KEY (`Seats_idSeats`, `Bookings_Flights_idFlights`, `Bookings_Users_Primary Email`),
