@@ -165,3 +165,64 @@ DELIMITER ;
 # Check
 
 CALL GetTrips("testing123@gmail.com") ;
+
+
+-- BEGINING OF PHIL'S STORED PROCEDURES ---------------------------------------------------------------------------------------------------
+-- news about vacations----------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE spRetrieveNewsByAirportID(IN input_idAirports INT)
+BEGIN
+	SELECT News
+    FROM Airports
+    WHERE idAirports = input_idAirports;
+    
+END //
+
+DELIMITER ;
+
+# Test it - make some data
+INSERT INTO Airports(`idAirports`,`City`,`State`, `News`)
+VALUES
+(1, 'Chicago', 'Illinois',"News about O'Hare International Airport") ;
+
+CALL spRetrieveNewsByAirportID(1) ;
+
+-- Contact Us ------------------------------------------------------------------ Data not stored b/c contact info stored in users
+
+-- About Us ------------------------------------------------------------------ No data stored for About Us. Will be front end.
+
+-- Advanced Search ------------------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE spSearchFlightsByCityDestination(IN input_FlightCityDestination VARCHAR(45))
+BEGIN
+	SELECT *
+    FROM Flights
+    WHERE idFlights IN (SELECT Flights_idFlights from Flight Destinations where Airports_idAirports IN (SELECT idAirports from Airports where City = input_FlightCityDestination));
+END //
+
+DELIMITER ;
+# Test it - make some data
+INSERT INTO Airports(`idAirports`,`City`,`State`, `News`) VALUES (1, 'Chicago', 'Illinois',"News about O'Hare International Airport") ;
+INSERT INTO Aircraft(`idAircraft`,`Company`,`Status`) VALUES (16, "Not Available", "Not Available") ;
+INSERT INTO Flights VALUES (16,154,"Delta", "Not Available",'2019-07-19 16:0:00','2019-07-19 19:30:00');
+
+CALL spSearchFlightsByCityDestination('Chicago') ;
+
+-- Trip cancellation or change ------------------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE spDelFlightFromUser(IN input_userID INT, IN input_flightID)
+BEGIN
+	DELETE 
+    FROM table_name 
+    WHERE condition;
+END //
+
+DELIMITER ;
+# Test it - make some data
+INSERT INTO Airports(`idAirports`,`City`,`State`, `News`) VALUES (1, 'Chicago', 'Illinois',"News about O'Hare International Airport") ;
+INSERT INTO Aircraft(`idAircraft`,`Company`,`Status`) VALUES (16, "Not Available", "Not Available") ;
+INSERT INTO Flights VALUES (16,154,"Delta", "Not Available",'2019-07-19 16:0:00','2019-07-19 19:30:00');
+
+CALL spSearchFlightsByCityDestination('Chicago') ;
+
+-- END OF PHIL'S STORED PROCEDURES -------------------------------------------------------------------------------------------------------
