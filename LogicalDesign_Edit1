@@ -3,11 +3,7 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema mydb
+-- Schema Airplanes_Project
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `Airplanes_Project` DEFAULT CHARACTER SET utf8 ;
 USE `Airplanes_Project` ;
@@ -36,12 +32,12 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flights` (
   `idFlights` INT NOT NULL,
   `Aircraft_idAircraft` INT NOT NULL,
   `Departure Time` DATETIME NOT NULL,
-  `Arrival Time` VARCHAR(45) NOT NULL,
+  `Arrival Time` DATETIME NOT NULL,
   PRIMARY KEY (`idFlights`),
   INDEX `fk_Flights_Aircraft_idx` (`Aircraft_idAircraft` ASC),
   CONSTRAINT `fk_Flights_Aircraft`
     FOREIGN KEY (`Aircraft_idAircraft`)
-    REFERENCES `mydb`.`Aircraft` (`idAircraft`)
+    REFERENCES `Airplanes_Project`.`Aircraft` (`idAircraft`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -72,12 +68,12 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flight Destinations` (
   INDEX `fk_Flights_has_Airports_Flights1_idx` (`Flights_idFlights` ASC),
   CONSTRAINT `fk_Flights_has_Airports_Flights1`
     FOREIGN KEY (`Flights_idFlights`)
-    REFERENCES `mydb`.`Flights` (`idFlights`)
+    REFERENCES `Airplanes_Project`.`Flights` (`idFlights`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flights_has_Airports_Airports1`
     FOREIGN KEY (`Airports_idAirports`)
-    REFERENCES `mydb`.`Airports` (`idAirports`)
+    REFERENCES `Airplanes_Project`.`Airports` (`idAirports`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -108,12 +104,12 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Flight Crew` (
   INDEX `fk_Flights_has_Employee_Flights1_idx` (`Flights_idFlights` ASC),
   CONSTRAINT `fk_Flights_has_Employee_Flights1`
     FOREIGN KEY (`Flights_idFlights`)
-    REFERENCES `mydb`.`Flights` (`idFlights`)
+    REFERENCES `Airplanes_Project`.`Flights` (`idFlights`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flights_has_Employee_Employee1`
     FOREIGN KEY (`Employee_idEmployee`)
-    REFERENCES `mydb`.`Employee` (`idEmployee`)
+    REFERENCES `Airplanes_Project`.`Employee` (`idEmployee`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -131,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Seats` (
   INDEX `fk_Seats_Aircraft1_idx` (`Aircraft_idAircraft` ASC),
   CONSTRAINT `fk_Seats_Aircraft1`
     FOREIGN KEY (`Aircraft_idAircraft`)
-    REFERENCES `mydb`.`Aircraft` (`idAircraft`)
+    REFERENCES `Airplanes_Project`.`Aircraft` (`idAircraft`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -150,12 +146,12 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Seat Designation` (
   INDEX `fk_Flights_has_Seats_Flights1_idx` (`Flights_idFlights` ASC),
   CONSTRAINT `fk_Flights_has_Seats_Flights1`
     FOREIGN KEY (`Flights_idFlights`)
-    REFERENCES `mydb`.`Flights` (`idFlights`)
+    REFERENCES `Airplanes_Project`.`Flights` (`idFlights`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flights_has_Seats_Seats1`
     FOREIGN KEY (`Seats_idSeats`)
-    REFERENCES `mydb`.`Seats` (`idSeats`)
+    REFERENCES `Airplanes_Project`.`Seats` (`idSeats`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -190,12 +186,12 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Bookings` (
   INDEX `fk_Flights_has_Users_Flights1_idx` (`Flights_idFlights` ASC),
   CONSTRAINT `fk_Flights_has_Users_Flights1`
     FOREIGN KEY (`Flights_idFlights`)
-    REFERENCES `mydb`.`Flights` (`idFlights`)
+    REFERENCES `Airplanes_Project`.`Flights` (`idFlights`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flights_has_Users_Users1`
     FOREIGN KEY (`Users_Primary Email`)
-    REFERENCES `mydb`.`Users` (`Primary Email`)
+    REFERENCES `Airplanes_Project`.`Users` (`Primary Email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -215,17 +211,18 @@ CREATE TABLE IF NOT EXISTS `Airplanes_Project`.`Ticket` (
   INDEX `fk_Seats_has_Bookings_Seats1_idx` (`Seats_idSeats` ASC),
   CONSTRAINT `fk_Seats_has_Bookings_Seats1`
     FOREIGN KEY (`Seats_idSeats`)
-    REFERENCES `mydb`.`Seats` (`idSeats`)
+    REFERENCES `Airplanes_Project`.`Seats` (`idSeats`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Seats_has_Bookings_Bookings1`
     FOREIGN KEY (`Bookings_Flights_idFlights` , `Bookings_Users_Primary Email`)
-    REFERENCES `mydb`.`Bookings` (`Flights_idFlights` , `Users_Primary Email`)
+    REFERENCES `Airplanes_Project`.`Bookings` (`Flights_idFlights` , `Users_Primary Email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS ;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
